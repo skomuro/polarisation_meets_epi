@@ -50,7 +50,7 @@ class interaction_model:
         # Initialisation
         self.agent_fixed = np.random.randint(self.k, size=(self.nragents))
         self.agent_flex = np.random.randint(self.m, size=(self.nragents, self.n))
-        self.agent_flex[:, -2] = np.random.choice([0, 1], size=self.nragents)
+        self.agent_flex[:, -2] = np.random.choice([0, 1], size=self.nragents) #Awareness state, 0 if aware 1 if unaware
         self.agent_flex[:, -1] = np.random.choice([0, 1], size=self.nragents, p=self.init_prob)
 
         # List all unique combinations between nodes of same and different groups, preprocessing for faster run
@@ -164,8 +164,8 @@ class interaction_model:
             infected_neighbors = sum(
                 self.agent_flex[self.nodeid[neighbor], -1] == 1 for neighbor in self.network.neighbors(nodeid)
             )
-            attitude_factor = self.agent_flex[nodeid, -2]
-            adjusted_infection_rate = self.infection_rate * attitude_factor
+            attitude_factor = self.agent_flex[nodeid, -2] #Awareness state, 0 if aware 1 if unaware 
+            adjusted_infection_rate = self.infection_rate * attitude_factor #Infection rate is 0 if aware (thus the complete immunity)
 
             infection_probability = (1 - (1 - adjusted_infection_rate) ** infected_neighbors) 
             if random.random() < infection_probability:
@@ -174,8 +174,8 @@ class interaction_model:
         # I -> S
         elif self.agent_flex[nodeid, -1] == 1:  
             if random.random() < self.recovery_rate:
-                self.agent_flex[nodeid, -1] = 0
-                self.agent_flex[nodeid, -2] = 1
+                self.agent_flex[nodeid, -1] = 0 #Recovered and goes back to Susceptible state
+                self.agent_flex[nodeid, -2] = 1 #Recovered and goes back to the unaware state
         return True
         
 
