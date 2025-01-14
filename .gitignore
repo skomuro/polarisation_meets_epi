@@ -1,4 +1,7 @@
+data/heatmap/*
 data/high_infection_rate/*
 data/low_infection_rate/*
+
+!data/heatmap/.gitignore
 !data/high_infection_rate/.gitignore
 !data/low_infection_rate/.gitignore
